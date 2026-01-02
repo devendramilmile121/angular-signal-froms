@@ -1,0 +1,115 @@
+<div class="registration-container">
+  <h2>User Registration</h2>
+
+  <form (submit)="onSubmit($event)">
+    <!-- Name Field -->
+    <div class="form-group">
+      <label for="name">Full Name *</label>
+      <input
+        id="name"
+        type="text"
+        [field]="registrationForm.name"
+        placeholder="Enter your full name"
+      />
+
+      @if (registrationForm.name().touched() && registrationForm.name().invalid()) {
+      <div class="error-messages">
+        @for (error of registrationForm.name().errors(); track error.kind) {
+        <span class="error">{{ error.message }}</span>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Email Field -->
+    <div class="form-group">
+      <label for="email">Email Address *</label>
+      <input
+        id="email"
+        type="email"
+        [field]="registrationForm.email"
+        placeholder="your.email@example.com"
+      />
+
+      @if (registrationForm.email().touched() && registrationForm.email().invalid()) {
+      <div class="error-messages">
+        @for (error of registrationForm.email().errors(); track error.kind) {
+        <span class="error">{{ error.message }}</span>
+        }
+      </div>
+      }
+    </div>
+
+    <!-- Skills Array -->
+    <div class="form-section">
+      <h3>Skills</h3>
+
+      @for (skill of registrationModel().skills; track $index) {
+      <div class="skill-item">
+        <div class="skill-fields">
+          <div class="form-group flex-grow">
+            <label [attr.for]="'skill-name-' + $index">Skill Name *</label>
+            <input
+              [id]="'skill-name-' + $index"
+              type="text"
+              [field]="registrationForm.skills[$index].name"
+              placeholder="e.g., Angular, TypeScript"
+            />
+
+            @if (registrationForm.skills[$index].name().touched() &&
+            registrationForm.skills[$index].name().invalid()) {
+            <div class="error-messages">
+              @for (error of registrationForm.skills[$index].name().errors(); track error.kind) {
+              <span class="error">{{ error.message }}</span>
+              }
+            </div>
+            }
+          </div>
+
+          <div class="form-group">
+            <label [attr.for]="'skill-proficiency-' + $index">Proficiency *</label>
+            <select
+              [id]="'skill-proficiency-' + $index"
+              [field]="registrationForm.skills[$index].proficiency"
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="advanced">Advanced</option>
+              <option value="expert">Expert</option>
+            </select>
+          </div>
+        </div>
+
+        @if ($index > 0) {
+        <button type="button" class="btn-remove" (click)="removeSkill($index)">Remove</button>
+        }
+      </div>
+      }
+
+      <button type="button" class="btn-secondary" (click)="addSkill()">+ Add Another Skill</button>
+    </div>
+
+    <!-- Display Form Summary -->
+    <div class="form-summary">
+      <h4>Form Status</h4>
+      <ul>
+        <li>Valid: {{ registrationForm().valid() ? '✅' : '❌' }}</li>
+        <li>Touched: {{ registrationForm().touched() ? 'Yes' : 'No' }}</li>
+        <li>Dirty: {{ registrationForm().dirty() ? 'Yes' : 'No' }}</li>
+      </ul>
+    </div>
+
+    <!-- Submit Button -->
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="!registrationForm().valid()">
+        Register
+      </button>
+    </div>
+  </form>
+
+  <!-- Preview of Current Data -->
+  <div class="data-preview">
+    <h4>Current Form Data</h4>
+    <pre>{{ registrationModel() | json }}</pre>
+  </div>
+</div>
