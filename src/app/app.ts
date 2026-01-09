@@ -20,7 +20,6 @@ interface UserRegistrationData {
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('angular-signal-form');
 
   registrationModel = signal<UserRegistrationData>({
     name: '',
@@ -59,27 +58,22 @@ export class App {
 
   // Add a new skill
   addSkill() {
-    const currentSkills = this.registrationModel().skills;
-    this.registrationModel.set({
-      ...this.registrationModel(),
-      skills: [...currentSkills, { name: '', proficiency: 'beginner' }],
-    });
+    this.registrationForm.skills().value.update((skills) => [
+      ...skills,
+      { name: '', proficiency: 'beginner' },
+    ]);
   }
 
   // Remove a skill
   removeSkill(index: number) {
-    const currentSkills = this.registrationModel().skills;
-    this.registrationModel.set({
-      ...this.registrationModel(),
-      skills: currentSkills.filter((_, i) => i !== index),
-    });
+    this.registrationForm.skills().value.update((skills) => skills.filter((_, i) => i !== index));
   }
 
   // Handle form submission
   async onSubmit(event: Event) {
     event.preventDefault();
     if (this.registrationForm().valid()) {
-      const formData = this.registrationModel();
+      const formData = this.registrationForm().value();
       console.log('Form submitted:', formData);
 
       // Here you would typically send data to your backend
